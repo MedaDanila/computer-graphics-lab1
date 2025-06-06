@@ -1,11 +1,8 @@
 <template>
-  <div
-    class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors"
-  >
-    <div class="container mx-auto p-4">
-      <h1 class="text-3xl font-bold mb-6 text-center">Минимизация полигона</h1>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="app-root">
+    <div class="container">
+      <h1>Минимизация полигона</h1>
+      <div class="grid-main">
         <!-- Левая панель: Управление -->
         <ControlsPanel
           @add-random-point="addPoint"
@@ -13,58 +10,33 @@
           @minimize-animated="minimizePolygonAnimated"
           @clear-points="clearPoints"
           :animation-active="animationActive"
-          class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
+          class="panel"
         />
-
         <!-- Центр: Холст -->
-        <div
-          class="relative bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden"
-        >
+        <div class="panel relative overflow-hidden">
           <PolygonCanvas
             :points="polygonPoints"
             :highlighted-vertex="currentStep"
-            class="border border-gray-200 dark:border-gray-700"
+            class="border"
             @add-point="addPoint"
           />
-
           <!-- Заглушка -->
-          <div
-            v-if="polygonPoints.length < 2"
-            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20"
-          >
-            <div
-              class="text-center p-6 bg-white dark:bg-gray-700 rounded-lg shadow-lg"
-            >
-              <svg
-                class="w-12 h-12 mx-auto text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
+          <div v-if="polygonPoints.length < 2" class="absolute inset-0 flex items-center justify-center bg-opacity-20">
+            <div class="text-center p-6 bg-white rounded-lg shadow-lg">
+              <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
               <p class="mt-2 font-medium">Добавьте минимум 2 точки</p>
-              <button
-                @click="addRandomPoints(3)"
-                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-              >
-                Сгенерировать случайный полигон
-              </button>
+              <button @click="addRandomPoints(3)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Сгенерировать случайный полигон</button>
             </div>
           </div>
         </div>
-
         <!-- Правая панель: Результаты -->
         <ResultsPanel
           :points="polygonPoints"
           :is-minimal="isMinimal"
           :bad-vertices="badVertices"
-          class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
+          class="panel"
         />
       </div>
     </div>

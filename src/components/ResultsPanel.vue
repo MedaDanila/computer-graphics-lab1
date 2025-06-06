@@ -1,51 +1,27 @@
 <template>
-  <div class="space-y-4">
-    <h2 class="text-xl font-semibold">Результаты</h2>
-
-    <div class="space-y-2">
-      <div class="flex justify-between">
+  <div class="results-panel">
+    <h2 class="panel-title">Результаты</h2>
+    <div class="results-block">
+      <div class="results-row">
         <span>Вершин:</span>
         <span class="font-bold">{{ points.length }}</span>
       </div>
-
-      <div class="flex justify-between">
+      <div class="results-row">
         <span>Минимальность:</span>
-        <span :class="isMinimal ? 'text-green-500' : 'text-red-500'">
-          {{ isMinimal ? "Да" : "Нет" }}
-        </span>
+        <span :class="isMinimal ? 'text-green' : 'text-red'">{{ isMinimal ? "Да" : "Нет" }}</span>
       </div>
     </div>
-
-    <div
-      v-if="badVertices.length"
-      class="mt-4 p-3 bg-red-100 dark:bg-red-900 rounded"
-    >
+    <div v-if="badVertices.length" class="bad-vertices">
       <h3 class="font-medium mb-1">Проблемные вершины:</h3>
-      <div class="flex flex-wrap gap-1">
-        <span
-          v-for="v in badVertices"
-          :key="v"
-          class="px-2 py-1 bg-red-200 dark:bg-red-800 rounded text-sm"
-        >
-          #{{ v + 1 }}
-        </span>
+      <div class="bad-vertices-list">
+        <span v-for="v in badVertices" :key="v" class="bad-vertex">#{{ v + 1 }}</span>
       </div>
     </div>
-
-    <div v-if="angles.length" class="mt-4">
+    <div v-if="angles.length" class="angles-block">
       <h3 class="font-medium mb-2">Углы между рёбрами:</h3>
-      <div class="max-h-64 overflow-y-auto pr-1">
-        <div class="grid grid-cols-3 gap-2">
-          <div
-            v-for="(angle, i) in angles"
-            :key="i"
-            class="p-2 rounded text-center"
-            :class="
-              angle < 10 || angle > 170
-                ? 'bg-red-100 dark:bg-red-900'
-                : 'bg-gray-100 dark:bg-gray-700'
-            "
-          >
+      <div class="angles-list">
+        <div class="angles-grid">
+          <div v-for="(angle, i) in angles" :key="i" :class="['angle-cell', angle < 10 || angle > 170 ? 'angle-bad' : 'angle-ok']">
             <div>Вершина #{{ i + 1 }}</div>
             <div class="font-bold">{{ angle.toFixed(1) }}°</div>
           </div>
@@ -85,3 +61,71 @@ const angles = computed(() => {
   });
 });
 </script>
+
+<style scoped>
+.results-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.results-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.results-row {
+  display: flex;
+  justify-content: space-between;
+}
+.text-green { color: #22c55e; }
+.text-red { color: #ef4444; }
+.bad-vertices {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #fee2e2;
+  border-radius: 8px;
+}
+.bad-vertices-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.bad-vertex {
+  padding: 0.25rem 0.5rem;
+  background: #fecaca;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.angles-block {
+  margin-top: 1rem;
+}
+.angles-list {
+  max-height: 16rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+.angles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+}
+.angle-cell {
+  padding: 0.5rem;
+  border-radius: 8px;
+  text-align: center;
+}
+.angle-bad {
+  background: #fee2e2;
+}
+.angle-ok {
+  background: #f3f4f6;
+}
+.font-bold { font-weight: bold; }
+.font-medium { font-weight: 500; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+</style>
