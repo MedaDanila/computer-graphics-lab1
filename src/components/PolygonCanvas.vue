@@ -193,22 +193,15 @@ function handleClick(event) {
     if (isDragging.value || isClosed.value) return;
 
     const { x, y } = getMousePos(event);
-
-    // Проверка на минимальное расстояние между точками
-    const tooClose = props.points.some((point) => {
-        return Math.sqrt(Math.pow(point.x - x, 2) + Math.pow(point.y - y, 2) < 100);
-    });
-
-    if (!tooClose) {
-        emit("add-point", { x, y });
-    }
+    emit("add-point", { x, y });
 }
 
 function handleMouseMove(event) {
     const { x, y } = getMousePos(event);
     currentPoint.value = { x, y };
 
-    if (isDragging.value && draggedPoint.value !== null) {
+    // Запрещаем перемещение если полигон не замкнут
+    if (isDragging.value && draggedPoint.value !== null && isClosed.value) {
         // Проверка на самопересечение при перемещении
         if (!checkSelfIntersection({ x, y }, draggedPoint.value)) {
             emit("move-point", { index: draggedPoint.value, x, y });
@@ -219,7 +212,7 @@ function handleMouseMove(event) {
 }
 
 function handleMouseDown(event) {
-    if (event.button === 2) return; // Пропускаем правую кнопку
+    if (event.button === 2 || !isClosed.value) return;
 
     const { x, y } = getMousePos(event);
 

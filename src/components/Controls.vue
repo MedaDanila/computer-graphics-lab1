@@ -21,7 +21,7 @@
                 @click="$emit('minimize')"
                 :disabled="!canMinimize || isAnimating"
             >
-                <span class="control-btn__content">Минимизировать многоугольник</span>
+                <span class="control-btn__content">Минимизировать</span>
             </button>
 
             <button
