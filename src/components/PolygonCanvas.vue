@@ -148,13 +148,27 @@ function draw() {
         ctx.value.beginPath();
         ctx.value.arc(point.x, point.y, 11, 0, Math.PI * 2);
 
-        // Отрисовка "плохих" вершин
+        // Проверка на точки с одинаковыми координатами (дубликаты)
+        const isDuplicatePoint = props.points.some(
+            (p, i) => i !== index && p.x === point.x && p.y === point.y,
+        );
+
         if (props.badVertices && props.badVertices.includes(index)) {
-            ctx.value.fillStyle = "#ffffff"; // Белая заливка
-            ctx.value.strokeStyle = "#ef4444"; // Красная обводка
-            ctx.value.lineWidth = 3;
-            ctx.value.fill();
-            ctx.value.stroke();
+            if (isDuplicatePoint) {
+                // Стиль для точек с одинаковыми координатами
+                ctx.value.fillStyle = "#64748b"; // Серый цвет как у обычных точек
+                ctx.value.strokeStyle = "#ef4444"; // Красная обводка
+                ctx.value.lineWidth = 3;
+                ctx.value.fill();
+                ctx.value.stroke();
+            } else {
+                // Стиль для просто "плохих" точек
+                ctx.value.fillStyle = "#ffffff"; // Белая заливка
+                ctx.value.strokeStyle = "#ef4444"; // Красная обводка
+                ctx.value.lineWidth = 3;
+                ctx.value.fill();
+                ctx.value.stroke();
+            }
         } else {
             // Отрисовка обычных вершин
             ctx.value.fillStyle = props.highlightedVertex === index ? "#3b82f6" : "#64748b";
@@ -167,7 +181,15 @@ function draw() {
 
         // Номера вершин
         ctx.value.globalAlpha = 1;
-        ctx.value.fillStyle = props.badVertices.includes(index) ? "#000000" : "#ffffff"; // Черный для плохих, белый для обычных
+        if (props.badVertices && props.badVertices.includes(index)) {
+            if (isDuplicatePoint) {
+                ctx.value.fillStyle = "#ffffff"; // Белый текст для дубликатов
+            } else {
+                ctx.value.fillStyle = "#000000"; // Чёрный текст для просто плохих точек
+            }
+        } else {
+            ctx.value.fillStyle = "#ffffff"; // Белый текст по умолчанию
+        }
         ctx.value.font = "14px Arial";
         ctx.value.textAlign = "center";
         ctx.value.textBaseline = "middle";

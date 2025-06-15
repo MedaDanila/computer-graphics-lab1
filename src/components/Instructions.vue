@@ -61,6 +61,10 @@
                                 <span>Обычная вершина</span>
                             </div>
                             <div class="vertex-type">
+                                <div class="vertex-example vertex-duplicate"></div>
+                                <span>Дублирующая вершина</span>
+                            </div>
+                            <div class="vertex-type">
                                 <div class="vertex-example vertex-bad"></div>
                                 <span>Проблемная вершина</span>
                             </div>
@@ -309,12 +313,13 @@ const fullRules = [
     background: #64748b;
 }
 
-.vertex-highlighted {
-    background: #3b82f6;
-}
-
 .vertex-bad {
     background: white;
+    border: 3px solid #ef4444;
+}
+
+.vertex-duplicate {
+    background-color: #64748b;
     border: 3px solid #ef4444;
 }
 
