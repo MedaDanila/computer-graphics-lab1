@@ -34,6 +34,7 @@ const currentPoint = ref(null);
 const draggedPoint = ref(null);
 const isClosed = ref(false);
 const gridSize = 20;
+const scale = 1;
 const snapToGrid = ref(true); // Добавлена привязка к сетке
 
 // Получение позиции мыши с учетом привязки к сетке
@@ -87,28 +88,52 @@ function initCanvas() {
     window.addEventListener("resize", resizeCanvas);
 }
 
-// Отрисовка сетки
+// Отрисовка сетки с единицами измерения
 function drawGrid() {
     const canvasElement = canvas.value;
     const width = canvasElement.width / (window.devicePixelRatio || 1);
     const height = canvasElement.height / (window.devicePixelRatio || 1);
+    const gridStep = gridSize; // Размер шага сетки (20px)
 
+    // Стиль для линий сетки
     ctx.value.strokeStyle = "#e0e7ef";
     ctx.value.lineWidth = 0.7;
+    ctx.value.font = "10px Arial";
+    ctx.value.fillStyle = "#94a3b8";
+    ctx.value.textAlign = "center";
+    ctx.value.textBaseline = "top";
 
-    for (let x = 0; x <= width; x += gridSize) {
+    // Вертикальные линии с подписями
+    for (let x = 0; x <= width; x += gridStep) {
         ctx.value.beginPath();
         ctx.value.moveTo(x, 0);
         ctx.value.lineTo(x, height);
         ctx.value.stroke();
+
+        // Подписи осей X (каждые 5 линий)
+        if (x % (gridStep * 5) === 0 && x > 0) {
+            ctx.value.fillText(`${(x / gridStep) * scale}m`, x, 5);
+        }
     }
 
-    for (let y = 0; y <= height; y += gridSize) {
+    // Горизонтальные линии с подписями
+    for (let y = 0; y <= height; y += gridStep) {
         ctx.value.beginPath();
         ctx.value.moveTo(0, y);
         ctx.value.lineTo(width, y);
         ctx.value.stroke();
+
+        // Подписи осей Y (каждые 5 линий)
+        if (y % (gridStep * 5) === 0 && y > 0) {
+            ctx.value.textAlign = "left";
+            ctx.value.fillText(`${(y / gridStep) * scale}m`, 5, y);
+            ctx.value.textAlign = "center";
+        }
     }
+
+    // Подпись в начале координат (0,0)
+    ctx.value.textAlign = "left";
+    ctx.value.fillText("0", 5, 5);
 }
 
 // Основная функция отрисовки
@@ -307,10 +332,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="glass-card p-6 w-full flex items-center justify-center mb-4 h-full min-h-0">
+    <div class="glass-card">
         <canvas
             ref="canvas"
-            class="w-full h-full min-h-0 flex-1 border border-slate-200 rounded-2xl bg-white shadow-2xl"
             @click="handleClick"
             @mousemove="handleMouseMove"
             @mousedown="handleMouseDown"
@@ -318,6 +342,8 @@ onUnmounted(() => {
             @mouseleave="handleMouseLeave"
             @contextmenu.prevent="handleRightClick"
         ></canvas>
+
+        <div class="scale-info">Масштаб: 20px = {{ scale }}м</div>
     </div>
 </template>
 
@@ -344,5 +370,13 @@ canvas {
     border: 1px solid rgba(203, 213, 225, 0.3);
     background-color: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(59, 130, 246, 0.1);
+}
+
+.scale-info {
+    position: absolute;
+    bottom: 10px;
+    right: 25px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
 }
 </style>

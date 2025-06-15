@@ -212,6 +212,7 @@ const minimizePolygonAnimated = async () => {
                 :vertices="vertices"
                 :highlighted-vertex="highlightedVertex"
                 :bad-vertices="badVertices"
+                :scale="1"
                 @remove-vertex="removeVertex"
             />
         </div>

@@ -12,6 +12,8 @@
             Список вершин
         </h2>
 
+        <div class="scale-info">Масштаб: 20px = {{ scale }}м</div>
+
         <div v-if="vertices.length === 0" class="vertex-list__empty">
             <div class="vertex-list__empty-content">
                 <p class="vertex-list__empty-text">Нет вершин</p>
@@ -33,7 +35,8 @@
                     <div class="vertex-item__info">
                         <span class="vertex-item__number">{{ index + 1 }}</span>
                         <span class="vertex-item__coordinates"
-                            >({{ vertex.x.toFixed(1) }}, {{ vertex.y.toFixed(1) }})</span
+                            >({{ ((vertex.x / 20) * scale).toFixed(1) }}м,
+                            {{ ((vertex.y / 20) * scale).toFixed(1) }}м)</span
                         >
                     </div>
                     <button
@@ -61,7 +64,7 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
     vertices: {
         type: Array,
         required: true,
@@ -73,6 +76,10 @@ defineProps({
     badVertices: {
         type: Array,
         default: () => [],
+    },
+    scale: {
+        type: Number,
+        default: 1, // 20px = 1м по умолчанию
     },
 });
 
@@ -86,7 +93,8 @@ defineEmits(["remove-vertex"]);
     --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.18);
 
     height: 100%;
-    max-height: 355px;
+    max-height: 379px;
+    position: relative; /* Для позиционирования scale-info */
 
     display: flex;
     flex-direction: column;
@@ -177,6 +185,17 @@ defineEmits(["remove-vertex"]);
             }
         }
     }
+}
+
+.scale-info {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    color: #64748b;
 }
 
 .vertex-item {
